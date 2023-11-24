@@ -195,129 +195,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Room Booking</title>
-       <style>
+    <title>Booking Details</title>
+    <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
+            margin: 20px;
+	  background-image: url('https://mobirise.com/extensions/hotelm4/assets/images/background13-1920x1280.jpg'); /* Replace 'your-background-image.jpg' with the actual URL or path to your background image */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
+        h1 {
             text-align: center;
         }
 
-        section {
-            width: 80%;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
         form {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         label {
-            width: 100%;
-            margin-bottom: 10px;
+            display: block;
+            margin-bottom: 5px;
         }
 
-        input, select {
-            width: calc(50% - 10px);
+        input {
+            width: 100%;
             padding: 8px;
             margin-bottom: 10px;
             box-sizing: border-box;
         }
 
         button {
-            background-color: #4caf50;
-            color: #fff;
+            background-color: #4CAF50;
+            color: white;
             padding: 10px;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
-            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #hotelInfo {
+            text-align: center;
+        }
+
+        #hotelImage {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        #historyContainer {
+            margin-top: 20px;
+        }
+
+        #bookingHistory {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+	table-color : #ffff00;
+        }
+
+        #bookingHistory th, #bookingHistory td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #bookingHistory th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        #backButton, #clearHistoryButton {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+
+        #roomPrice {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #cancelBookingButton {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            margin-right: 10px;
         }
     </style>
-
 </head>
 <body>
 
-    <header>
-        <h1>Hotel Room Booking</h1>
-    </header>
+    <h1>Booking Details</h1>
 
-    <section>
-        <form id="bookingForm">
-             <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+    <div id="hotelInfo">
+        <img id="hotelImage" src="" alt="Booked Hotel Image">
+        <p id="hotelName"></p>
+    </div>
 
-            <label for="phone">phone number:</label>
-            <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required>
+    <form id="bookingForm">
+        <label for="guestName">Guest Name:</label>
+        <input type="text" id="guestName" required>
 
-            <label for="age">age:</label>
-            <input type="number" id="age" name="age" required>
-            
-             <label for="check-in-date">Check-in Date:</label>
-            <input type="date" id="check-in-date" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" required>
 
-            <label for="check-out-date">Check-out Date:</label>
-            <input type="date" id="check-out-date" required>
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" required>
 
-            <label for="room-type">Room Type:</label>
-            <select id="room-type" required>
-                <option value="single">Single Room</option>
-                <option value="double">Double Room</option>
-                <option value="suite">Suite</option>
-            </select>
+        <label for="checkInDateA">Check-In Date:</label>
+        <input type="date" id="checkInDateA" required>
 
-            <label for="guests">Number of Guests:</label>
-            <input type="number" id="guests" min="1" required>
+        <label for="checkOutDateA">Check-Out Date:</label>
+        <input type="date" id="checkOutDateA" required>
 
-            <button type="submit">Book Now</button>
-        </form>
+        <label for="roomType">Room Type:</label>
+        <select id="roomType" onchange="updateRoomPrice()" required>
+            <option value="standard">Standard Room</option>
+            <option value="deluxe">Deluxe Room</option>
+            <option value="suite">Suite</option>
+        </select>
 
-        <div id="successMessage" style="display: none; color: green; margin-top: 10px;">
-            Booking successful! Thank you for choosing our hotel.
-        </div>
-    </section>
-<section class="booking-history">
+        <div id="roomPrice">Room Price: $0</div>
+
+        <label for="payment">Payment:</label>
+        <input type="text" id="payment" required>
+
+        <button type="button" onclick="confirmBooking()">Confirm Booking</button>
+    </form>
+
+    <button id="backButton" onclick="goBack()">Back</button>
+    <button id="clearHistoryButton" onclick="clearBookingHistory()">Clear History</button>
+    <button id="cancelBookingButton" onclick="cancelBooking()">Cancel Booking</button>
+<span id="logoutSymbol" onclick="logout()">⚙️logout</span></h1>
+    <div id="historyContainer">
         <h2>Booking History</h2>
-
-        <!-- Placeholder for displaying booking history -->
-        <div class="booking-details">
-            <p><strong>Name:</strong> John Doe</p>
-            <p><strong>Email:</strong> john@example.com</p>
-            <p><strong>Room Type:</strong> Double Room</p>
-            <p><strong>Check-in Date:</strong> 2023-12-01</p>
-            <p><strong>Check-out Date:</strong> 2023-12-05</p>
-        </div>
-
-        <!-- Add more booking details as needed -->
-    </section>
+        <table id="bookingHistory">
+            <thead>
+                <tr>
+                    <th>Reference ID</th>
+                    <th>Guest Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Check-In Date</th>
+                    <th>Check-Out Date</th>
+                    <th>Room Type</th>
+                    <th>Room Price</th>
+                    <th>Payment</th>
+                    <th>Booking Status</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+        </table>
+    </div>
 
     <script>
-        document.getElementById('bookingForm').addEventListener('submit', function(event) {
-            // Prevent the form from submitting and refreshing the page
-            event.preventDefault();
+        function goBack() {
+            window.history.back();
+        }
 
-            // Simulate a successful booking (in a real-world scenario, this would be handled by the server)
-            // You would typically make an AJAX request to the server to handle the booking process
-            // and show the success message based on the server response.
-            // For simplicity, I'm just showing a simple alert here.
-            alert('Booking successful! Thank you for choosing our hotel.');
+        function updateRoomPrice() {
+            const roomType = document.getElementById('roomType').value;
+            let roomPrice;
 
-            // Display the success message
-            document.getElementById('successMessage').style.display = 'block';
-        });
+            // Assign prices based on room type
+            switch (roomType) {
+                case 'standard':
+                    roomPrice = 100;
+                    break;
+                case 'deluxe':
+                    roomPrice = 150;
+                    break;
+                case 'suite':
+                    roomPrice = 200;
+                    break;
+                default:
+                    roomPrice = 0;
+            }
+
+            document.getElementById('roomPrice').innerText = `Room Price: $${roomPrice}`;
+        }
+
+        function generateReferenceId() {
+            // Generate a random reference ID
+            return Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+        }
+
+        function clearBookingHistory() {
+            localStorage.removeItem('bookingHistory');
+            displayBookingHistory(); // Refresh the displayed history
+        }
+
+        function cancelBooking() {
+            // Get the last booking from history
+            const bookingHistory = JSON.parse(localStorage.getItem('bookingHistory')) || [];
+            const lastBooking = bookingHistory[bookingHistory.length - 1];
+
+            // Check if there is a booking to cancel
+            if (lastBooking) {
+                lastBooking.bookingStatus = 'Cancelled';
+                localStorage.setItem('bookingHistory', JSON.stringify(bookingHistory));
+                displayBookingHistory(); // Refresh the displayed history
+            } else {
+                alert('No booking to cancel.');
+            }
+        }
+
+        // Function to get the hotel information from the URL
+        function getHotelInfo() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hotelName = urlParams.get('hotel');
+            const hotelImage = urlParams.get('image');
+
+            // Display the hotel name and image on the page
+            document.getElementById('hotelName').innerText = `Booked Hotel: ${hotelName}`;
+            document.getElementById('hotelImage').src = hotelImage;
+        }
+
+        // Function to confirm booking
+        function confirmBooking() {
+            const guestName = document.getElementById('guestName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const checkInDate = document.getElementById('checkInDateA').value;
+            const checkOutDate = document.getElementById('checkOutDateA').value;
+            const roomType = document.getElementById('roomType').value;
+            const payment = document.getElementById('payment').value;
+
+            // Assign prices based on room type
+            let roomPrice;
+            switch (roomType) {
+                case 'standard':
+                    roomPrice = 100;
+                    break;
+                case 'deluxe':
+                    roomPrice = 150;
+                    break;
+                case 'suite':
+                    roomPrice = 200;
+                    break;
+                default:
+                    roomPrice = 0;
+            }
+
+            // Generate a reference ID
+            const referenceId = generateReferenceId();
+
+            // Store booking details in local storage
+            const bookingDetails = {
+                referenceId,
+                guestName,
+                email,
+                phone,
+                checkInDate,
+                checkOutDate,
+                roomType,
+                roomPrice,
+                payment,
+                bookingStatus: 'Confirmed'
+            };
+
+            // Retrieve existing history or initialize an empty array
+            const bookingHistory = JSON.parse(localStorage.getItem('bookingHistory')) || [];
+
+            // Add the new booking to the history
+            bookingHistory.push(bookingDetails);
+
+            // Update local storage
+            localStorage.setItem('bookingHistory', JSON.stringify(bookingHistory));
+
+            // Update the displayed history
+            displayBookingHistory();
+        }
+
+        // Function to display booking history
+        function displayBookingHistory() {
+            const bookingHistory = JSON.parse(localStorage.getItem('bookingHistory')) || [];
+            const historyBody = document.getElementById('historyBody');
+
+            // Clear existing content
+            historyBody.innerHTML = '';
+
+            // Display each booking in the table
+            bookingHistory.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${booking.referenceId}</td>
+                                 <td>${booking.guestName}</td>
+                                 <td>${booking.email}</td>
+                                 <td>${booking.phone}</td>
+                                 <td>${booking.checkInDate}</td>
+                                 <td>${booking.checkOutDate}</td>
+                                 <td>${booking.roomType}</td>
+                                 <td>$${booking.roomPrice}</td>
+                                 <td>${booking.payment}</td>
+                                 <td>${booking.bookingStatus}</td>`;
+                historyBody.appendChild(row);
+            });
+        }
+
+        // Call the function when the page loads
+        window.onload = function () {
+            getHotelInfo();
+            displayBookingHistory();
+        };
+    </script>
+
+    <script>
+        function logout() {
+            // Redirect to the login page
+            window.location.href = "2.html";
+        }
+
+        // ... (rest of your script, unchanged)
     </script>
 
 </body>
